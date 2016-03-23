@@ -1,71 +1,33 @@
-var checkingBalance = 0;
-var savingsBalance = 0;
-
-var getUserCheckingInput = function(){
-  amount = parseInt( document.querySelector('#checkingAmount').value );
-  checkingBalanceDiv = document.querySelector('#checkingBalanceDiv');
-  document.querySelector('#checkingAmount').value = '';
-  return amount;
-}
-
-var getUserSavingsInput = function(){
-  amount = parseInt( document.querySelector('#savingsAmount').value );
-  savingsBalanceDiv = document.querySelector('#savingsBalanceDiv');
-  document.querySelector('#savingsAmount').value = '';
-  return amount;
-}
-
-var checkingDeposit = function(){
-  checkingBalance += getUserCheckingInput();
-  checkingBalanceDiv.innerHTML = "$" + checkingBalance;
-
-  // add class using if/else
-  if (checkingBalance == 0) {
-    checkingBalanceDiv.classList.add("zero");
-  } else {
-    checkingBalanceDiv.classList.remove("zero");
-  }
- }
-
-function checkingWithdrawal(){
-  checkingBalance -= getUserCheckingInput();
-  checkingBalanceDiv.innerHTML = "$" + checkingBalance;
-
-  // add class using if/else
-  if (checkingBalance == 0) {
-    checkingBalanceDiv.classList.add("zero");
-  } else {
-    checkingBalanceDiv.classList.remove("zero");
+var atm = {
+  // buttons: document.querySelector("[type='button']"),
+  buttons: document.querySelectorAll("[type='button']"),
+  accounts: {
+    checking: 0,
+    savings: 0
+  },
+  transact: function(event){
+    var account = event.target.parentNode
+    var accountType = account.querySelector("h2").innerHTML.toLowerCase()
+    var inputField = "#"+ accountType +"Amount"
+    var userInput = parseInt(account.querySelector(inputField).value)
+    // check which button we clicked on
+    var button = event.target.value
+    if( button == "Deposit"){
+      // add user input to the relevant account
+      this.accounts[accountType] +=  userInput
+    } else if( button == "Withdraw" && this.accounts[accountType] >= userInput) {
+      this.accounts[accountType] -=  userInput
+    } else{
+      alert("You don't have enough money")
+    }
+    // update the html for that account
+    account.querySelector(".balance").innerHTML = "$" + this.accounts[accountType]
+  },
+  listen: function(){
+    for (var i = 0; i < this.buttons.length; i++) {
+      this.buttons[i].addEventListener('click', this.transact.bind(this))
+    }
   }
 }
 
-function savingsDeposit(){
-  savingsBalance += getUserSavingsInput();
-  savingsBalanceDiv.innerHTML = "$" + savingsBalance;
-
-  // add class using if/else
-  if (savingsBalance == 0) {
-    savingsBalanceDiv.classList.add("zero");
-  } else {
-    savingsBalanceDiv.classList.remove("zero");
-  }
-}
-
-function savingsWithdrawal(){
-  savingsBalance -= getUserSavingsInput();
-  savingsBalanceDiv.innerHTML = "$" + savingsBalance;
-
-  // add class using if/else
-  if (savingsBalance == 0) {
-    savingsBalanceDiv.classList.add("zero");
-  } else {
-    savingsBalanceDiv.classList.remove("zero");
-  }
-
-}
-
-// an eventListener for each button, each one a "click"
-document.querySelector('#checkingDepositButton').addEventListener('click', checkingDeposit);
-document.querySelector('#checkingWithdrawalButton').addEventListener('click', checkingWithdrawal);
-document.querySelector('#savingsDepositButton').addEventListener('click', savingsDeposit);
-document.querySelector('#savingsWithdrawalButton').addEventListener('click', savingsWithdrawal);
+atm.listen()
