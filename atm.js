@@ -1,11 +1,9 @@
+var checkingsBalance = 0
+var savingsBalance = 0
 var checkingDepositButton = document.querySelector("#checkingDepositButton")
 var checkingWithdrawalButton = document.querySelector("#checkingWithdrawalButton")
 var savingsDepositButton = document.querySelector("#savingsDepositButton")
 var savingsWithdrawalButton = document.querySelector("#savingsWithdrawalButton")
-var checkingsBalance = 0
-var savingsBalance = 0
-
-
 var bothBalances = function () {
  checkingsBalance + savingsBalance
  return checkingsBalance + savingsBalance
@@ -25,24 +23,32 @@ var outputCheckings = function() {
  var amount = parseInt( document.querySelector('#checkingAmount').value );
  checkingBalanceDiv = document.querySelector('#checkingBalanceDiv');
  document.querySelector('#checkingAmount').value = '';
- var remainder = checkingsBalance - amount
+ //
+ // checkingsBalance = checkingsBalance - amount
+ // checkingBalanceDiv.innerHTML = "$" + checkingsBalance
 
- if (remainder >= 0) {
-   checkingsBalance = checkingsBalance - amount
-   checkingBalanceDiv.innerHTML = "$" + checkingsBalance
- }
- else {
-   if (bothBalances() - amount >= 0) {
+  var remainder = checkingsBalance - amount
 
-     savingsBalance = savingsBalance + remainder
-     checkingsBalance = 0
-     checkingBalanceDiv.innerHTML = "$" + checkingsBalance
-     savingsBalanceDiv.innerHTML = "$" + savingsBalance
-   }
-   else {
-     checkingBalanceDiv.innerHTML = "$" + checkingsBalance
-   }
- }
+  if (remainder >= 0) {
+    checkingsBalance = checkingsBalance - amount
+    checkingBalanceDiv.innerHTML = "$" + checkingsBalance
+  }
+  else {
+    if (bothBalances() - amount >= 0) {
+
+      savingsBalance = savingsBalance + remainder //because negative number
+      checkingsBalance = 0
+      checkingBalanceDiv.innerHTML = "$" + checkingsBalance
+      savingsBalanceDiv.innerHTML = "$" + savingsBalance
+    }
+    else {
+      checkingBalanceDiv.innerHTML = "$" + checkingsBalance
+    }
+  }
+
+
+
+};
 
 var inputSavings = function() {
  amount = parseInt( document.querySelector('#savingsAmount').value );
@@ -58,17 +64,9 @@ var outputSavings = function() {
  checkingBalanceDiv = document.querySelector('#savingsBalanceDiv');
  document.querySelector('#savingsAmount').value = '';
 
-
- if (savingsBalance - amount < 0) {
-   savingsBalanceDiv.innerHTML = "$" + savingsBalance
- }
- else if (checkingsBalance > 0) {
-   savingsBalance = savingsBalance - amount
-   savingsBalanceDiv.innerHTML = "$" + savingsBalance
- }
-
- };
-
+ savingsBalance = savingsBalance - amount
+ savingsBalanceDiv.innerHTML = "$" + savingsBalance
+};
 
 checkingDepositButton.addEventListener( "click", inputCheckings );
 checkingWithdrawalButton.addEventListener("click", outputCheckings );
